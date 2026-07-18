@@ -1,0 +1,18 @@
+{
+  "name": "wildcatter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wildcatter — Unit 6 Texas History economy game (TEKS 7.7A, 7.7B, 7.1B, 7.12B). Drill the Texas oil boom as an independent wildcatter, 1901–1931, through six eras while a scripted oil-price ticker spikes and crashes no matter how well you play (solo, one class-wide group) — over a server-authoritative Socket.IO backend with a live Teacher Command Center reporting one class-wide accuracy group.",
+  "comment": "No npm workspaces: this drive is exFAT, which cannot host the symlinks/junctions workspace linking requires. server/ and client/ install independently; `npm install` here cascades via postinstall.",
+  "scripts": {
+    "postinstall": "npm install --prefix server --no-fund --no-audit && npm install --prefix client --no-fund --no-audit",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test": "npm test --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "node server/src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@wildcatter/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Server-authoritative Node + Express + Socket.IO backend for Wildcatter — the Unit 6 Age of Oil economy game. All session state lives in memory — no database, nothing kept long-term.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

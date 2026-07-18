@@ -1,0 +1,12 @@
+# render.yaml — one Render web service builds the client and starts the
+# Socket.IO server (same deploy shape as the other Texas History games).
+services:
+  - type: web
+    name: wildcatter
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node server/src/index.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
