@@ -133,7 +133,18 @@ export function createStepGame({
     hasOpponent: false,        // variants are parallel solo tracks, never rivals
     totalActions: TOTAL,
     chapterCount: CHAPTER_COUNT,
-    meta: { meters, markers, variants: metaVariants },
+    meta: {
+      meters, markers, variants: metaVariants,
+      // Chapter labels per side + the steps-per-chapter rule, so the client can
+      // derive "which chapter does this feedback belong to" from the resolution's
+      // own stepIndex (race-proof) instead of eventCard/turn, which the server
+      // pushes ahead to the NEXT chapter in the same batch as a chapter-ending
+      // resolution (see MatchView).
+      stepsPerChapter: 2,
+      chapters: Object.fromEntries(
+        SIDES.map((s) => [s, CONTENT[s].phases.map((p) => ({ title: p.title, date: p.date }))])
+      ),
+    },
 
     // Solo only. soloSide is the chosen variant (trail). One human side, no AI.
     initMatch({ soloSide } = {}) {

@@ -15,10 +15,28 @@ const wildcatterScore = (m) => (m ? (m.cash || 0) + (m.wells || 0) + (m.reputati
 
 export default function MatchView({ state, dispatch }) {
   const { match } = state;
-  const { eventCard, turn, feedback } = match;
-  const meta = match.begin.meta;
+  const { begin, eventCard, turn, feedback } = match;
+  const meta = begin.meta;
 
-  const phase = eventCard?.chapter || turn?.chapter;
+  // The server pushes the NEXT chapter's chapter:event AND its first turn:begin
+  // synchronously with the CURRENT chapter's LAST turn:resolution — it doesn't
+  // wait for the student to dismiss anything. So while a chapter-ending verdict
+  // is on screen, eventCard AND turn have BOTH already raced ahead, and
+  // preferring either would make the chip read one chapter ahead. Only
+  // feedback.stepIndex is baked into the feedback payload itself and can't
+  // race — derive the chapter from it (2 steps per chapter, the same rule the
+  // server's chapterOf uses). Once feedback is dismissed, eventCard/turn are
+  // exactly what's on screen next, so THEIR chapter is what should show.
+  const chapters = meta.chapters?.[begin.side] || [];
+  const stepsPerChapter = meta.stepsPerChapter || 2;
+  const chapterIndexFor = (stepIndex) => Math.floor(stepIndex / stepsPerChapter);
+  const liveChapterIndex = feedback ? chapterIndexFor(feedback.stepIndex)
+    : turn?.yourTurn ? chapterIndexFor(turn.stepIndex)
+    : eventCard ? eventCard.chapter.index
+    : null;
+  const phase = liveChapterIndex != null && chapters[liveChapterIndex]
+    ? { index: liveChapterIndex, count: chapters.length, ...chapters[liveChapterIndex] }
+    : (eventCard?.chapter || turn?.chapter); // fallback if meta.chapters is ever absent
   const chapterIndex = phase?.index ?? 0;
 
   // Any meter running dangerously low (color is never the only signal).
